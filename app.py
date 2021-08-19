@@ -21,11 +21,10 @@ from IPython.display import YouTubeVideo
 from urllib.parse import urlparse
 # from summary import get_summarized_text
 from transcript import generate_transcript
-
 # from gensim.summarization import summarize
-# from wordcloud import WordCloud, STOPWORDS
-# import spacy
-# from sklearn.feature_extraction.text import CountVectorizer 
+from wordcloud import WordCloud, STOPWORDS
+import spacy
+from sklearn.feature_extraction.text import CountVectorizer 
 
 
 header = st.container()
@@ -97,6 +96,8 @@ st.markdown("<h2 style='text-align: left; color:#58A6FF;'><b>Youtube Link<b></h2
 st.markdown("")
 
 
+##################################
+# YOUTUBE LINK #
 
 #Getting the youtube link and retrieving the youtube id:
 def yt_link_id():
@@ -118,6 +119,76 @@ transcript = transc()
 # summary = get_summarized_text(transcript_link)
 
 
+#################################
+# WORDCLOUD #
+
+def get_transcript_from_link(link):
+    transcript = YouTubeTranscriptApi.get_transcript(link)
+    return transcript
+
+transcript =get_transcript_from_link(yt_link)
+
+
+def get_df_transcript(transcript):
+    transcript = pd.DataFrame(transcript)
+    return transcript
+
+df = get_df_transcript(transcript)
+
+
+def get_text_column_from_df(df_transcript):
+    df_text = df_transcript.loc[:, ['text']]
+    return df_text
+
+df_text = get_text_column_from_df(df)
+
+
+def lemmatize_text(df_text):
+    nlp = spacy.load('en_core_web_sm')
+    sent = []
+    doc = nlp(df_text)
+    for word in doc:
+        sent.append(word.lemma_)
+    return " ".join(sent)
+
+df_text_lemmatized = df_text.applymap(lemmatize_text)
+
+
+def get_text_from_df_above_3_letters(df_text):
+    text = " ".join(i for i in df_text.text)
+    text_split = text.split()
+    text_3_letters = []
+    for i in text_split:
+        if len(i) > 3:
+            text_3_letters.append(i)
+    text_3_letters = " ".join(i for i in text_3_letters)
+    return text_3_letters
+
+text_3_letters = get_text_from_df_above_3_letters(df_text_lemmatized)
+
+
+def get_wordcloud(text):
+    wordcloud = WordCloud(background_color='white',
+                          stopwords=STOPWORDS,
+                          max_words=200,
+                          max_font_size=40,
+                          scale=3,
+                          random_state=1 # chosen at random by flipping a coin; it was heads
+                         ).generate(text)
+    return wordcloud
+
+wordcloud = get_wordcloud(text_3_letters)
+
+
+def plot_wordcloud(wordcloud):
+    fig = plt.figure(1, figsize=(12, 12))
+    plt.axis('off')
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.show()
+    return fig
+    st.pyplot(fig)
+
+plot_wordcloud = plot_wordcloud(wordcloud)
 
 ################################
 
@@ -169,7 +240,7 @@ if nav == 'Wordcloud':
     st.text('')
     if st.button('Wordcloud'):
         with st.spinner('Learning...'):
-            st.write(transcript)
+            st.write(plot_wordcloud)
 
     # input_me = st.text_area("Input some text in English, and scroll down to analyze it", max_chars=5000)
     # input_me = st.write(transcript)
