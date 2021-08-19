@@ -36,9 +36,6 @@ team = st.container()
 @st.cache(persist=True)
 def load_data(data):
     pass
-    # data = pd.read_csv('./data/galaxies.csv')
-    # return data
-
 
 
 #############################
@@ -98,6 +95,9 @@ st.markdown("")
 
 ##################################
 # YOUTUBE LINK #
+
+# if YouTubeTranscriptApi._errors.VideoUnavailable == True:
+#     pass    
 
 #Getting the youtube link and retrieving the youtube id:
 def yt_link_id():
