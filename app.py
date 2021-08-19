@@ -10,10 +10,10 @@ from nltk.tokenize import word_tokenize
 import readtime
 import textstat
 import matplotlib.pyplot as plt
-from wordcloud import WordCloud, STOPWORDS
-import spacy
-from youtube_transcript_api import YouTubeTranscriptApi
-from sklearn.feature_extraction.text import CountVectorizer 
+# from wordcloud import WordCloud, STOPWORDS
+# import spacy
+# from youtube_transcript_api import YouTubeTranscriptApi
+# from sklearn.feature_extraction.text import CountVectorizer 
 
 
 header = st.container()
