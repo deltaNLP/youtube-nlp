@@ -85,11 +85,11 @@ expander.write('[Nurlan]()')
 with dataset:
 
     st.markdown("")
-    st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Youtube Link<b></h3>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: left; color:#58A6FF;'><b>Youtube Link<b></h2>", unsafe_allow_html=True)
     st.markdown("")
 
     st.text_input('Paste your Youtube link here')
-    st.header('Convert text :speech_balloon:')
+    st.subheader('Convert text :speech_balloon:')
     nav = st.radio('',['Transcript','English Translation','Summary', 'Measure text'])
     
 
