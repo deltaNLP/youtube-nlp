@@ -187,8 +187,8 @@ def plot_wordcloud(wordcloud):
     plt.axis('off')
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.show()
-    return fig
     st.pyplot(fig)
+    return fig
 
 plot_wordcloud = plot_wordcloud(wordcloud)
 
@@ -238,7 +238,7 @@ if nav == 'Translation':
 #             st.write(summary)
 
 if nav == 'Wordcloud':
-    st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Transcript Text<b></h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Wordcloud<b></h3>", unsafe_allow_html=True)
     st.text('')
     if st.button('Wordcloud'):
         with st.spinner('Learning...'):
