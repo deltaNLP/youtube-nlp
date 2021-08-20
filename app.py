@@ -72,7 +72,7 @@ st.sidebar.write('')
 #About
 ######
 expander = st.sidebar.expander('About')
-expander.write('Text')
+expander.write('NLP')
 
 
 #Team
