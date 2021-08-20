@@ -4,21 +4,42 @@ from youtube_transcript_api import YouTubeTranscriptApi
 # import Punctuator
 # import language_tool_python
 
+@st.cache
+def get_transcript_from_link(link):
+    transcript_list = YouTubeTranscriptApi.list_transcripts(link)
+    transcript_all = transcript_list.find_generated_transcript(['en', 'ru', 'de', 'tg','tr','es','pt','fr','it'])
+    #text translation to English
+    transcript=transcript_all.translate('en').fetch()
+    return transcript
 
 
-#Generating and the translation of the transcripts:
-def generate_transcript(id):
-  transcript_list = YouTubeTranscriptApi.list_transcripts(id)
-  transcript = transcript_list.find_generated_transcript(['en', 'ru', 'de', 'tg','tr','es','pt','fr','it'])
-  #text translation to English
-  Final_transcript=transcript.translate('en').fetch()
-  script = ""
-  #cleaning the text
-  for text in Final_transcript:
-    t = text["text"]
-    if t != '[music]':
-      script += t + " "
-  return script,len(script.split())
+@st.cache
+def clean_text_farukh(transcript):
+    script= ''
+    for text in transcript:
+        t = text['text']
+        if t != ['Music']:
+            script += t + ' ' 
+    return script, len(script.split())
+
+
+
+
+
+# #Generating and the translation of the transcripts:
+# @st.cache
+# def generate_transcript(id):
+#   transcript_list = YouTubeTranscriptApi.list_transcripts(id)
+#   transcript = transcript_list.find_generated_transcript(['en', 'ru', 'de', 'tg','tr','es','pt','fr','it'])
+#   #text translation to English
+#   Final_transcript=transcript.translate('en').fetch()
+#   script = ""
+#   #cleaning the text
+#   for text in Final_transcript:
+#     t = text["text"]
+#     if t != '[music]':
+#       script += t + " "
+#   return script,len(script.split())
 
 
 
