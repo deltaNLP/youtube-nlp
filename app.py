@@ -222,7 +222,7 @@ def wordcloud_function(transcript):
     return wordcloud
 
 
-@st.cache
+
 def plot_wordcloud(wordcloud):
     fig = plt.figure(1, figsize=(12, 12))
     plt.axis('off')
