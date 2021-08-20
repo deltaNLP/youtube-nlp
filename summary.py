@@ -1,6 +1,7 @@
 from transformers import pipeline
 from youtube_transcript_api import YouTubeTranscriptApi
 from transcript import yt_link_id
+import streamlit as st
 
 
 yt_link = yt_link_id()
@@ -8,7 +9,7 @@ yt_link = yt_link_id()
 ##############
 ## SUMMARIZE FUNCIOTNS ##
 
-
+@st.cache
 def get_transcript_from_link(link):
     transcript = YouTubeTranscriptApi.get_transcript(link)
     return transcript
@@ -17,6 +18,7 @@ transcript_link =get_transcript_from_link(yt_link_id)
 
 summarizer = pipeline('summarization')
 
+@st.cache
 def get_summarized_text(transcript):
     length = '' 
     text_holder = transcript
