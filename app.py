@@ -4,7 +4,8 @@ import json
 import pickle
 import uuid
 import re
-import pandas as pd
+import pathlib
+# import pandas as pd
 import numpy as np
 from PIL import Image
 import streamlit as st
@@ -15,16 +16,17 @@ from nltk.tokenize import word_tokenize
 import readtime
 import textstat
 import matplotlib.pyplot as plt
-# from transformers import pipeline
 from youtube_transcript_api import YouTubeTranscriptApi
 from IPython.display import YouTubeVideo
 from urllib.parse import urlparse
+# from transformers import pipeline
 # from summary import get_summarized_text
-from transcript import generate_transcript
+from transcript import get_transcript_from_link, clean_text_farukh
+from wordcloud_functions import get_df_transcript, get_text_column_from_df, lemmatize_text, get_text_from_df_above_3_letters, get_wordcloud
 # from gensim.summarization import summarize
-from wordcloud import WordCloud, STOPWORDS
-import spacy
-from sklearn.feature_extraction.text import CountVectorizer 
+# from wordcloud import WordCloud, STOPWORDS
+# import spacy
+# from sklearn.feature_extraction.text import CountVectorizer 
 
 
 header = st.container()
@@ -102,97 +104,22 @@ st.markdown("")
 #     pass    
 
 #Getting the youtube link and retrieving the youtube id:
+url = st.text_input('Paste your Youtube link here')
+@st.cache
 def yt_link_id():
-    url = st.text_input('Paste your Youtube link here')
     url_data = urlparse(url)
     yt_id = url_data.query[2::]
     return yt_id
 
 yt_link = yt_link_id()
 
+
 #getting the transcript:
-def transc():
-    transcript, no_of_words = generate_transcript(yt_link)
-    return transcript
-
-
-transcript = transc()
+transcript = get_transcript_from_link(yt_link)
+transcript_farr = clean_text_farukh(transcript)
 
 # summary = get_summarized_text(transcript_link)
 
-
-#################################
-# WORDCLOUD #
-
-def get_transcript_from_link(link):
-    transcript = YouTubeTranscriptApi.get_transcript(link)
-    return transcript
-
-transcript =get_transcript_from_link(yt_link)
-
-
-def get_df_transcript(transcript):
-    transcript = pd.DataFrame(transcript)
-    return transcript
-
-df = get_df_transcript(transcript)
-
-
-def get_text_column_from_df(df_transcript):
-    df_text = df_transcript.loc[:, ['text']]
-    return df_text
-
-df_text = get_text_column_from_df(df)
-
-
-def lemmatize_text(df_text):
-    nlp = spacy.load('en_core_web_sm')
-    sent = []
-    doc = nlp(df_text)
-    for word in doc:
-        sent.append(word.lemma_)
-    return " ".join(sent)
-
-df_text_lemmatized = df_text.applymap(lemmatize_text)
-
-
-def get_text_from_df_above_3_letters(df_text):
-    text = " ".join(i for i in df_text.text)
-    text_split = text.split()
-    text_3_letters = []
-    for i in text_split:
-        if len(i) > 3:
-            text_3_letters.append(i)
-    text_3_letters = " ".join(i for i in text_3_letters)
-    return text_3_letters
-
-text_3_letters = get_text_from_df_above_3_letters(df_text_lemmatized)
-
-
-def get_wordcloud(text):
-    wordcloud = WordCloud(background_color='white',
-                          stopwords=STOPWORDS,
-                          max_words=200,
-                          max_font_size=40,
-                          scale=3,
-                          random_state=1 # chosen at random by flipping a coin; it was heads
-                         ).generate(text)
-    return wordcloud
-
-wordcloud = get_wordcloud(text_3_letters)
-
-
-def plot_wordcloud(wordcloud):
-    fig = plt.figure(1, figsize=(12, 12))
-    plt.axis('off')
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.show()
-    st.pyplot(fig)
-    return fig
-
-plot_wordcloud = plot_wordcloud(wordcloud)
-
-################################
 
 
 # if transcript == False:
@@ -201,13 +128,13 @@ plot_wordcloud = plot_wordcloud(wordcloud)
 #     st.write(transcript)
 
 
-#######
+##########
 #PAGES
-######
+##########
 
 
 st.subheader('Convert text :speech_balloon:')
-nav = st.radio('',['Transcript','Translation','Summarize', 'Wordcloud', 'Measure'])
+nav = st.radio('',['Transcript','Summarize', 'Wordcloud', 'Measure'])
     
 
 
@@ -221,14 +148,9 @@ if nav == 'Transcript':
     st.text('')
     if st.button('Transcript'):
         with st.spinner('Learning...'):
-            st.write(transcript)
+            st.write(transcript_farr)
 
-if nav == 'Translation':
-    st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Translation<b></h3>", unsafe_allow_html=True)
-    st.text('')
-    if st.button('Translation'):
-        with st.spinner('Learning...'):
-            st.write(transcript)
+
 
 # if nav == 'Summarize':
 #     st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Summarization<b></h3>", unsafe_allow_html=True)
@@ -237,12 +159,12 @@ if nav == 'Translation':
 #         with st.spinner('Learning...'):
 #             st.write(summary)
 
-if nav == 'Wordcloud':
-    st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Wordcloud<b></h3>", unsafe_allow_html=True)
-    st.text('')
-    if st.button('Wordcloud'):
-        with st.spinner('Learning...'):
-            st.write(plot_wordcloud)
+# if nav == 'Wordcloud':
+#     st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Wordcloud<b></h3>", unsafe_allow_html=True)
+#     st.text('')
+#     if st.button('Wordcloud'):
+#         with st.spinner('Learning...'):
+#             st.pyplot(plot_wordcloud)
 
     # input_me = st.text_area("Input some text in English, and scroll down to analyze it", max_chars=5000)
     # input_me = st.write(transcript)
@@ -290,6 +212,35 @@ if nav == 'Measure':
 
 ####################################
 
+@st.cache
+def wordcloud_function(transcript):
+    df = get_df_transcript(transcript)
+    df_text = get_text_column_from_df(df)
+    df_text_lemmatized = df_text.applymap(lemmatize_text)
+    text_3_letters = get_text_from_df_above_3_letters(df_text_lemmatized)
+    wordcloud = get_wordcloud(text_3_letters)
+    return wordcloud
+
+
+@st.cache
+def plot_wordcloud(wordcloud):
+    fig = plt.figure(1, figsize=(12, 12))
+    plt.axis('off')
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.show()
+    st.pyplot(fig)
+    return fig
+
+plot_wordcloud = plot_wordcloud(wordcloud_function(transcript))
+
+################################
+
+
+
+
+
+
+
 # Footer
 
 st.markdown("")
@@ -307,9 +258,10 @@ st.text(' ')
 
 
 #saving the output to txt file:
-def saving_to_txt():
-  with open('data/transcript.txt','w')as f:
-	  f.writelines(transc())
+# @st.cache
+# def saving_to_txt():
+#   with open('data/transcript.txt','w')as f:
+# 	  f.writelines(transc())
 
 
 def download_button(object_to_download, download_filename, button_text, pickle_it=False):
