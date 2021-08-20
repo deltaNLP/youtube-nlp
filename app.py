@@ -134,22 +134,29 @@ transcript_farr = clean_text_farukh(transcript)
 
 
 st.subheader('Convert text :speech_balloon:')
-nav = st.radio('',['Transcript','Summarize', 'Wordcloud', 'Measure'])
+nav = st.radio('',['Transcript', 'Wordcloud', 'Measure'])
+# nav = st.radio('',['Transcript','Summarize', 'Wordcloud', 'Measure'])
     
 
 
 #-----------------------------------------
    
-#Transcript
-########
+#TRANSCRIPT
+###########
        
 if nav == 'Transcript':
     st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Transcript Text<b></h3>", unsafe_allow_html=True)
     st.text('')
-    if st.button('Transcript'):
-        with st.spinner('Learning...'):
-            st.write(transcript_farr)
+    # if st.button('Transcript'):
+    with st.spinner('Learning...'):
+        st.write(transcript_farr)
 
+
+
+#-----------------------------------------
+
+#SUMMARY
+########
 
 
 # if nav == 'Summarize':
@@ -159,19 +166,10 @@ if nav == 'Transcript':
 #         with st.spinner('Learning...'):
 #             st.write(summary)
 
-# if nav == 'Wordcloud':
-#     st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Wordcloud<b></h3>", unsafe_allow_html=True)
-#     st.text('')
-#     if st.button('Wordcloud'):
-#         with st.spinner('Learning...'):
-#             st.pyplot(plot_wordcloud)
+
 
     # input_me = st.text_area("Input some text in English, and scroll down to analyze it", max_chars=5000)
     # input_me = st.write(transcript)
-
-
-
-
 
 
 
@@ -187,20 +185,20 @@ if nav == 'Measure':
     # input_me = st.text_area("Input some text in English, and scroll down to analyze it", max_chars=5000)
     # input_me = st.write(transcript)
 
-    if st.button('Measure'):
-        with st.spinner('Learning...'):
-            nltk.download('punkt')
-            rt = readtime.of_text(transcript)
-            tc = textstat.flesch_reading_ease(transcript)
-            tokenized_words = word_tokenize(transcript)
-            lr = len(set(tokenized_words)) / len(tokenized_words)
-            lr = round(lr,2)
-            st.text('Reading Time')
-            st.write(rt)
-            st.text('Text Complexity (score from 0 (hard to read), to 100 (easy to read))')
-            st.write(tc)
-            st.text('Use of different words (bigger number means more variety of words)')
-            st.write(lr)
+# if st.button('Measure'):
+    with st.spinner('Learning...'):
+        nltk.download('punkt')
+        rt = readtime.of_text(transcript_farr)
+        # tc = textstat.flesch_reading_ease(transcript)
+        # tokenized_words = word_tokenize(transcript_farr)
+        # lr = len(set(tokenized_words)) / len(tokenized_words)
+        # lr = round(lr,2)
+        st.text('Reading Time')
+        st.write(rt)
+        # st.text('Text Complexity (score from 0 (hard to read), to 100 (easy to read))')
+        # st.write(tc)
+        # st.text('Use of different words (bigger number means more variety of words)')
+        # st.write(lr)
 
     # st.markdown('___') 
     
@@ -210,7 +208,14 @@ if nav == 'Measure':
     #                     """,
     #                     )
 
-####################################
+
+
+
+#-----------------------------------------
+   
+#WORDCLOUD
+##########
+
 
 @st.cache
 def wordcloud_function(transcript):
@@ -231,7 +236,15 @@ def plot_wordcloud(wordcloud):
     st.pyplot(fig)
     return fig
 
-plot_wordcloud = plot_wordcloud(wordcloud_function(transcript))
+
+
+if nav == 'Wordcloud':
+    st.markdown("<h3 style='text-align: left; color:#58A6FF;'><b>Wordcloud<b></h3>", unsafe_allow_html=True)
+    st.text('')
+    # if st.button('Wordcloud'):
+    with st.spinner('Learning...'):
+    #         st.pyplot(plot_wordcloud)
+        plot_wordcloud = plot_wordcloud(wordcloud_function(transcript))
 
 ################################
 
