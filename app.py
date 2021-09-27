@@ -108,7 +108,11 @@ st.markdown("")
 url = st.text_input('Paste your Youtube link here')
 @st.cache
 def yt_link_id():
-    url_data = urlparse(url)
+    if url == True:   
+        url_data = urlparse(url)
+    else:
+        url_data = urlparse('https://www.youtube.com/watch?v=eBSeCp__xhI')
+    
     yt_id = url_data.query[2::]
     return yt_id
 
@@ -122,11 +126,11 @@ transcript_farr = clean_text_farukh(transcript)
 # summary = get_summarized_text(transcript_link)
 
 
+# if transcript == False:
+#     st.write('https://www.youtube.com/watch?v=eBSeCp__xhI')
+# else:
+#     st.write(transcript)
 
-if transcript == False:
-    st.write('https://www.youtube.com/watch?v=eBSeCp__xhI')
-else:
-    st.write(transcript)
 
 
 ##########
