@@ -21,9 +21,9 @@ def get_text_column_from_df(df_transcript):
 
 @st.cache
 def lemmatize_text(df_text):
-    # path = pathlib.Path(__file__).parent / 'data/en_core_web_sm/en_core_web_sm-3.1.0'
-    # nlp = spacy.load(path)
-    nlp = spacy.load('en_core_web_sm')
+    path = pathlib.Path(__file__).parent / 'data/en_core_web_sm/en_core_web_sm-3.1.0'
+    nlp = spacy.load(path)
+    # nlp = spacy.load('en_core_web_sm')
     sent = []
     doc = nlp(df_text)
     for word in doc:
