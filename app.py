@@ -25,7 +25,6 @@ from transcript import get_transcript_from_link, clean_text_farukh
 from wordcloud_functions import get_df_transcript, get_text_column_from_df, lemmatize_text, get_text_from_df_above_3_letters, get_wordcloud
 # from gensim.summarization import summarize
 # from wordcloud import WordCloud, STOPWORDS
-# import spacy
 # from sklearn.feature_extraction.text import CountVectorizer 
 
 
