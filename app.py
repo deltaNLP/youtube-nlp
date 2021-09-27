@@ -78,12 +78,12 @@ expander.write('NLP')
 #Team
 ######
 expander = st.sidebar.expander('Delta NLP Team')
-expander.write('[Farrukh]()')
-expander.write('[Umut]()')
-expander.write('[Deniz]()')
-expander.write('[Gabriel]()')
+expander.write('[Farrukh](https://github.com/fbulbulov)')
+expander.write('[Umut](https://github.com/aktumut)')
+expander.write('[Deniz](https://github.com/Deniz-shelby)')
+expander.write('[Gabriel](https://github.com/Calypso25)')
 expander.write('[Fabio](https://github.com/fistadev)')
-expander.write('[Nurlan]()')
+expander.write('[Nurlan](https://github.com/nsarkhanov)')
 
 
 
@@ -98,6 +98,7 @@ st.markdown("")
 ##################################
 # YOUTUBE LINK #
 # https://www.youtube.com/watch?v=Tuw8hxrFBH8
+# https://www.youtube.com/watch?v=eBSeCp__xhI
 
 
 # if YouTubeTranscriptApi._errors.VideoUnavailable == True:
@@ -122,10 +123,10 @@ transcript_farr = clean_text_farukh(transcript)
 
 
 
-# if transcript == False:
-#     st.write('https://www.youtube.com/watch?v=Tuw8hxrFBH8')
-# else:
-#     st.write(transcript)
+if transcript == False:
+    st.write('https://www.youtube.com/watch?v=eBSeCp__xhI')
+else:
+    st.write(transcript)
 
 
 ##########
